@@ -1,0 +1,41 @@
+name: continuous
+
+on:
+  push:
+  pull_request:
+    branches:
+      - main
+
+env:
+  GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+jobs:
+  ubuntu-latest:
+    name: ubuntu-latest
+    runs-on: ubuntu-latest
+    steps:
+      - name: Get the sources
+        uses: actions/checkout@v2
+        with:
+          fetch-depth: 0
+
+      - name: Install .NET
+        uses: actions/setup-dotnet@v1
+        with:
+          dotnet-version: '5.0.x'
+
+      - name: Install Dotnet Tools
+        run: dotnet tool restore
+
+      - name: Run build
+        run: dotnet run build
+
+      - name: Run tests
+        run: dotnet run tests
+
+      - name: Package binaries
+        run: dotnet run publish
+
+#      - name: GitHub Release
+#        if: github.ref == 'refs/heads/main'
+#        run: dotnet run githubrelease
