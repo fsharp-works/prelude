@@ -2,9 +2,7 @@
 Microsoft Visual Studio Solution File, Format Version 12.00
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "src", "src", "{5818582C-3C4B-4647-98A5-017E70F3AE4F}"
 EndProject
-Project("{F2A71F9B-5D33-465A-A702-920D77279786}") = "Build", "Build.fsproj", "{6489ECB8-CFD1-46CA-AE91-5B6A10688407}"
-EndProject
-Project("{F2A71F9B-5D33-465A-A702-920D77279786}") = "FsharpWorks.Prelude", "src\FsharpWorks.Prelude\FsharpWorks.Prelude.fsproj", "{6308B275-CDD9-4218-88DF-62E72C8A0B57}"
+Project("{F2A71F9B-5D33-465A-A702-920D77279786}") = "FsharpWorks.Prelude", "src\FsharpWorks.Prelude\FsharpWorks.Prelude.fsproj", "{C456F268-03DC-4719-A733-06FE0701BC08}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -12,11 +10,12 @@ Global
 		Release|Any CPU = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
-	    {6489ECB8-CFD1-46CA-AE91-5B6A10688407}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-    	{6489ECB8-CFD1-46CA-AE91-5B6A10688407}.Release|Any CPU.ActiveCfg = Release|Any CPU
-    	{6489ECB8-CFD1-46CA-AE91-5B6A10688407}.Release|Any CPU.Build.0 = Release|Any CPU
+		{C456F268-03DC-4719-A733-06FE0701BC08}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{C456F268-03DC-4719-A733-06FE0701BC08}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{C456F268-03DC-4719-A733-06FE0701BC08}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{C456F268-03DC-4719-A733-06FE0701BC08}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(NestedProjects) = preSolution
-		{6308B275-CDD9-4218-88DF-62E72C8A0B57} = {5818582C-3C4B-4647-98A5-017E70F3AE4F}
+		{C456F268-03DC-4719-A733-06FE0701BC08} = {5818582C-3C4B-4647-98A5-017E70F3AE4F}
 	EndGlobalSection
 EndGlobal

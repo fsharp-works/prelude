@@ -10,9 +10,12 @@ env:
   GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
 jobs:
-  ubuntu-latest:
-    name: ubuntu-latest
+  build:
+    name: build
     runs-on: ubuntu-latest
+    env:
+      CONFIGURATION: Release
+
     steps:
       - name: Get the sources
         uses: actions/checkout@v2
@@ -24,17 +27,29 @@ jobs:
         with:
           dotnet-version: '5.0.x'
 
+      - name: Setup GitVersion
+        uses: gittools/actions/gitversion/setup@v0.9.9
+        with:
+          versionSpec: '5.x'
+
       - name: Install Dotnet Tools
         run: dotnet tool restore
 
+      - name: Run GitVersion
+        id: gitversion
+        uses: gittools/actions/gitversion/execute@v0.9.9
+        with:
+          useConfigFile: true
+          updateAssemblyInfo: true
+
       - name: Run build
-        run: dotnet run build
+        run: dotnet build -c ${{ env.CONFIGURATION }} -p:AssemblyVersion=${{ steps.gitversion.outputs.MajorMinorPatch }}
 
       - name: Run tests
-        run: dotnet run tests
+        run: dotnet test -c ${{ env.CONFIGURATION }} --no-build
 
-      - name: Package binaries
-        run: dotnet run publish
+      - name: Build packages
+        run: dotnet pack -c ${{ env.CONFIGURATION }} -p:PackageVersion=${{ steps.gitversion.outputs.NuGetVersionV2 }}
 
 #      - name: GitHub Release
 #        if: github.ref == 'refs/heads/main'
