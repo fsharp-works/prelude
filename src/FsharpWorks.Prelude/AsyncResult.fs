@@ -3,20 +3,6 @@ namespace FSharpCore.Prelude
 open FSharpx
 open FsharpWorks.Prelude
 
-(* Alexey: Experimental stuff.
-
-   It look like Async<Result<_,_>> could be a commonly used effect.
-
-   Dealing with a value "within" this structure "directly" and in the same way
-   as dealing with Result<_,_> could be useful and convenient.
-
-   For example, transforming a success value with `AsyncResult.map f`
-   should be more convenient than doing it without it: `Async.map (fun x -> x |> Result.map f)`
-   (and this is how `AsyncResult.map` is really implemented)
-
-   The basic idea is to have EitherT, but F# doesn't (cannot) have monad transformers,
-   so AsyncResult is a pretty much EitherT specialised to Async.
-*)
 type AsyncResult<'Success, 'Failure> = Async<Result<'Success, 'Failure>>
 
 [<RequireQualifiedAccess>]
