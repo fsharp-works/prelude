@@ -11,3 +11,7 @@ let awaitAny xs =
     |> Task.WhenAny
     |> Async.AwaitTask
     |> Async.bind Async.AwaitTask
+
+let inline ofOption z f = Option.option (Async.returnM z) f
+
+let inline ofOptionF z f = Option.option ( async { return z () }) f
