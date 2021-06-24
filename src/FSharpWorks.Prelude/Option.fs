@@ -1,5 +1,5 @@
 [<RequireQualifiedAccess>]
-module FsharpWorks.Prelude.Option
+module FSharpWorks.Prelude.Option
 
 let inline bimap f g x =
     x |> Option.map g |> Option.defaultWith f

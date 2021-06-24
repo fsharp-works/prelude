@@ -1,5 +1,5 @@
 [<RequireQualifiedAccess>]
-module FsharpWorks.Prelude.Result
+module FSharpWorks.Prelude.Result
 
 /// Swaps Ok and Error values.
 let inline swap source =

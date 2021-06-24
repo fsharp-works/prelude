@@ -1,7 +1,7 @@
 namespace FSharpCore.Prelude
 
 open FSharpx
-open FsharpWorks.Prelude
+open FSharpWorks.Prelude
 
 type AsyncResult<'Success, 'Failure> = Async<Result<'Success, 'Failure>>
 

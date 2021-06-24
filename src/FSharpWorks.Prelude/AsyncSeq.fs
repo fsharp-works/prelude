@@ -1,5 +1,5 @@
 [<RequireQualifiedAccess>]
-module FsharpWorks.Prelude.AsyncSeq
+module FSharpWorks.Prelude.AsyncSeq
 
 open FSharp.Control
 open FSharpx

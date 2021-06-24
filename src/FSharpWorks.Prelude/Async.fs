@@ -1,5 +1,5 @@
 [<RequireQualifiedAccess>]
-module FsharpWorks.Prelude.Async
+module FSharpWorks.Prelude.Async
 
 open System.Threading.Tasks
 open FSharpx

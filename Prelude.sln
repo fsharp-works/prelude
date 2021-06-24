@@ -2,7 +2,7 @@
 Microsoft Visual Studio Solution File, Format Version 12.00
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "src", "src", "{5818582C-3C4B-4647-98A5-017E70F3AE4F}"
 EndProject
-Project("{F2A71F9B-5D33-465A-A702-920D77279786}") = "FsharpWorks.Prelude", "src\FsharpWorks.Prelude\FsharpWorks.Prelude.fsproj", "{C456F268-03DC-4719-A733-06FE0701BC08}"
+Project("{F2A71F9B-5D33-465A-A702-920D77279786}") = "FSharpWorks.Prelude", "src\FSharpWorks.Prelude\FSharpWorks.Prelude.fsproj", "{C456F268-03DC-4719-A733-06FE0701BC08}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

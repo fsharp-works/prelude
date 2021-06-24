@@ -1,5 +1,5 @@
 [<RequireQualifiedAccess>]
-module FsharpWorks.Prelude.Function
+module FSharpWorks.Prelude.Function
 
 let map f g = g >> f
 let map2 f g = fun a b -> f (g a b)
