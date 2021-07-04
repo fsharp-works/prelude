@@ -1,4 +1,4 @@
-namespace FSharpCore.Prelude
+namespace FSharpWorks.Prelude
 
 [<AutoOpen>]
 module Common =

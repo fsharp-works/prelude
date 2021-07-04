@@ -4,6 +4,10 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "src", "src", "{5818582C-3C4
 EndProject
 Project("{F2A71F9B-5D33-465A-A702-920D77279786}") = "FSharpWorks.Prelude", "src\FSharpWorks.Prelude\FSharpWorks.Prelude.fsproj", "{C456F268-03DC-4719-A733-06FE0701BC08}"
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "tests", "tests", "{916D1B80-F318-42DB-9F43-DF99803768BE}"
+EndProject
+Project("{F2A71F9B-5D33-465A-A702-920D77279786}") = "FSharpWorks.Prelude.Tests", "tests\FSharpWorks.Prelude.Tests\FSharpWorks.Prelude.Tests.fsproj", "{AB5C301C-D94A-4BA6-9185-76888B78B947}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -14,8 +18,13 @@ Global
 		{C456F268-03DC-4719-A733-06FE0701BC08}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{C456F268-03DC-4719-A733-06FE0701BC08}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{C456F268-03DC-4719-A733-06FE0701BC08}.Release|Any CPU.Build.0 = Release|Any CPU
+		{AB5C301C-D94A-4BA6-9185-76888B78B947}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{AB5C301C-D94A-4BA6-9185-76888B78B947}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{AB5C301C-D94A-4BA6-9185-76888B78B947}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{AB5C301C-D94A-4BA6-9185-76888B78B947}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(NestedProjects) = preSolution
 		{C456F268-03DC-4719-A733-06FE0701BC08} = {5818582C-3C4B-4647-98A5-017E70F3AE4F}
+		{AB5C301C-D94A-4BA6-9185-76888B78B947} = {916D1B80-F318-42DB-9F43-DF99803768BE}
 	EndGlobalSection
 EndGlobal

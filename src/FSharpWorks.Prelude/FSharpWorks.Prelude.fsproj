@@ -8,11 +8,13 @@
     <ItemGroup>
         <Compile Include="Common.fs" />
         <Compile Include="Function.fs" />
+        <Compile Include="List.fs" />
         <Compile Include="Option.fs" />
         <Compile Include="Result.fs" />
         <Compile Include="Async.fs" />
         <Compile Include="AsyncSeq.fs" />
         <Compile Include="AsyncResult.fs" />
+        <Compile Include="IO.fs" />
     </ItemGroup>
 
     <ItemGroup>

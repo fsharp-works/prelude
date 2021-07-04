@@ -1,5 +1,6 @@
-namespace FSharpCore.Prelude
+namespace FSharpWorks.Prelude
 
+open System
 open FSharpx
 open FSharpWorks.Prelude
 
@@ -8,13 +9,13 @@ type AsyncResult<'Success, 'Failure> = Async<Result<'Success, 'Failure>>
 [<RequireQualifiedAccess>]
 module AsyncResult =
 
-    let inline returnM x: AsyncResult<_, _> = x |> Result.Ok |> Async.returnM
+    let inline returnM x : AsyncResult<_, _> = x |> Result.Ok |> Async.returnM
 
-    let inline swap (x: AsyncResult<_, _>): AsyncResult<_, _> = x |> Async.map Result.swap
+    let inline swap (x: AsyncResult<_, _>) : AsyncResult<_, _> = x |> Async.map Result.swap
 
     let inline map f (x: AsyncResult<_, _>) : AsyncResult<_, _> = Async.map (Result.map f) x
 
-    let inline bimap onSuccess onError (a: AsyncResult<_, _>): AsyncResult<_, _> =
+    let inline bimap onSuccess onError (a: AsyncResult<_, _>) : AsyncResult<_, _> =
         Async.map (Result.bimap onSuccess onError) a
 
     let inline mapError f (a: AsyncResult<_, _>) : AsyncResult<_, _> = Async.map (Result.mapError f) a
@@ -24,6 +25,8 @@ module AsyncResult =
     let ap (a: AsyncResult<_, _>) (f: AsyncResult<_, _>) : AsyncResult<_, _> =
         a
         |> Async.bind (fun res -> f |> Async.map (Result.ap res))
+
+    let inline apply f a = ap a f
 
     let bind (f: 'a -> AsyncResult<'b, 'c>) (a: AsyncResult<_, _>) : AsyncResult<_, _> =
         async {
@@ -43,13 +46,14 @@ module AsyncResult =
 
     /// Convert a list of AsyncResult into a AsyncResult<list> using monadic style.
     /// Only the first error is returned. The error type need not be a list.
-    let sequence resultList =
-        let (<*>) = flip ap
-        let (<!>) = map
-        let cons head tail = head :: tail
-        let consR headR tailR = cons <!> headR <*> tailR
+    let sequence xs =
+        let f x xs' = ap xs' (map List.cons x)
+        List.foldBack f xs (returnM [])
 
-        List.foldBack consR resultList (returnM [])
+    let zip x1 x2 =
+        Async.zip x1 x2
+        |> Async.map (fun (r1, r2) -> Result.zip r1 r2)
+
 
     let inline ofOk x : AsyncResult<_, _> = Ok x |> Async.returnM
 
@@ -79,48 +83,37 @@ module AsyncResult =
 module AsyncResultComputationExpression =
 
     type AsyncResultBuilder() =
-        member self.Return(x) = AsyncResult.returnM x
+        member inline self.Return(x) = AsyncResult.returnM x
 
-        member self.Bind(x, f) = AsyncResult.bind f x
+        member inline self.Bind(x, f) = AsyncResult.bind f x
 
-        member self.ReturnFrom(x) = x
+        member self.Combine(a, b) = self.Bind(a, (fun () -> b ()))
+
+        member inline self.ReturnFrom(x: AsyncResult<_, _>) = async.ReturnFrom(x)
 
         member self.Zero() = self.Return()
 
-        member self.Delay(f) = f
+        member self.Yield(x) = AsyncResult.returnM x
 
-        member self.Run(f) = f ()
+        member self.Delay(f: unit -> AsyncResult<_, _>) : AsyncResult<_, _> = async.Delay f
 
-        member self.While(guard, body) =
+        member self.While(guard, body) : AsyncResult<_, _> =
             if not (guard ()) then
                 self.Zero()
             else
-                self.Bind(body (), (fun () -> self.While(guard, body)))
+                self.Bind(body, (fun () -> self.While(guard, body)))
 
-        member self.TryWith(body, handler) =
-            try
-                self.ReturnFrom(body ())
-            with e -> handler e
+        member inline self.TryWith(body, handler) : AsyncResult<_, _> = async.TryWith(body, handler)
 
-        member self.TryFinally(body, compensation) =
-            try
-                self.ReturnFrom(body ())
-            finally
-                compensation ()
+        member inline self.TryFinally(body, compensation) : AsyncResult<_, _> = async.TryFinally(body, compensation)
 
-        member self.Using(disposable: #System.IDisposable, body) =
-            let body' = fun () -> body disposable
+        member self.Using(disposable: 'T :> IDisposable, body: 'T -> AsyncResult<_, _>) : AsyncResult<_, _> = async.Using(disposable, body)
 
-            self.TryFinally(
-                body',
-                fun () ->
-                    match disposable with
-                    | null -> ()
-                    | disposable -> disposable.Dispose()
-            )
-
-        member self.For(sequence: seq<_>, body) =
+        member self.For(sequence: #seq<'T>, body: 'T -> AsyncResult<unit, 'TError>) : AsyncResult<unit, 'TError> =
             self.Using(sequence.GetEnumerator(), (fun enum -> self.While(enum.MoveNext, self.Delay(fun () -> body enum.Current))))
 
+        member inline self.BindReturn(x: AsyncResult<_, _>, f) = AsyncResult.map f x
+
+        member inline self.MergeSources(t1: AsyncResult<_, _>, t2: AsyncResult<_, _>) = AsyncResult.zip t1 t2
 
     let asyncResult = AsyncResultBuilder()
