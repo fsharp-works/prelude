@@ -39,6 +39,7 @@ module IO =
                 and! res2 = f2 env
                 return (res1, res2)
             }
+        |> IO
 
 
     let inline join m = bind id m
