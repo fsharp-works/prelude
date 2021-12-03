@@ -22,7 +22,24 @@ module IO =
     /// Wrap a given value into IO
     let returnM a = IO(fun _ -> AsyncResult.returnM a)
 
+    let ofError a : IO<'r, 'a, 'e> = IO(fun _ -> AsyncResult.ofError a)
+    let ofAsync a : IO<'r, 'a, 'e> = IO(fun _ -> AsyncResult.ofAsync a)
+    let ofAsyncResult a : IO<'r, 'a, 'e> = IO(fun _ -> a)
+    let ofOption e a : IO<'r, 'a, 'e> = IO(fun _ -> AsyncResult.ofOption e a)
+    let ofOptionF e a : IO<'r, 'a, 'e> = IO(fun _ -> AsyncResult.ofOptionF e a)
 
+
+    /// Lift a function into an IO action
+    let lift (f: 'r -> 'a): IO<'r, 'a, 'e> = IO (f >> AsyncResult.returnM)
+
+    /// Lift an effectful function into an IO action
+    let liftUnit f = IO (fun _ -> f () |> AsyncResult.returnM)
+
+    /// Lift a function that produces Async into an IO action
+    let liftAsync f : IO<'r, 'a, 'e> = IO(f >> AsyncResult.ofAsync)
+
+    /// Lift a function that produces AsyncResult into and IO action
+    let liftAsyncResult f : IO<'r, 'a, 'e> = IO f
 
     /// Ignores the result and replaces it with unit
     let ignore (IO f) : IO<'r, unit, 'e> =
@@ -98,13 +115,6 @@ module IO =
     let local f (IO g) = IO(f >> g)
 
     let inline ofSuccess a = returnM a
-    let ofError a : IO<'r, 'a, 'e> = IO(fun _ -> AsyncResult.ofError a)
-    let ofAsync a : IO<'r, 'a, 'e> = IO(fun _ -> AsyncResult.ofAsync a)
-    let liftAsync f : IO<'r, 'a, 'e> = IO(f >> AsyncResult.ofAsync)
-    let ofAsyncResult a : IO<'r, 'a, 'e> = IO(fun _ -> a)
-    let liftAsyncResult f : IO<'r, 'a, 'e> = IO f
-    let ofOption e a : IO<'r, 'a, 'e> = IO(fun _ -> AsyncResult.ofOption e a)
-    let ofOptionF e a : IO<'r, 'a, 'e> = IO(fun _ -> AsyncResult.ofOptionF e a)
 
     let tryWith handler (a: IO<'r, 'a, 'e>) =
         fun env ->
