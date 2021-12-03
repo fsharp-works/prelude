@@ -4,11 +4,13 @@ open System
 open Hedgehog.Xunit
 open FsUnit.Xunit
 open FSharpWorks.Prelude
+open FsUnitTyped
 
 let (>>=) m f = IO.bind f m
 
 let runTestIO<'err> z m: Result<_, 'err> =
     m |> IO.RunSynchronously z
+
 
 [<Property>]
 let ``Left identity`` (env: int, a: int) =
@@ -18,7 +20,7 @@ let ``Left identity`` (env: int, a: int) =
         let! res1 = IO.returnM a >>= k
         let! res2 = k a
         return res1 |> should equal res2
-    } |> runTestIO<unit> env
+    } |> IO.RunSynchronously env
 
 
 [<Property>]
@@ -27,7 +29,7 @@ let ``Right identity`` (env: int) =
         let! res1 = IO.ask >>= IO.returnM
         let! res2 = IO.ask
         return res1 |> should equal res2
-    } |> runTestIO<unit> env
+    } |> IO.RunSynchronously env
 
 [<Property>]
 let ``Monadic let`` (env: int, a: int) =
@@ -36,7 +38,7 @@ let ``Monadic let`` (env: int, a: int) =
         let! y = IO.ask
 
         return (x + y) |> should equal (env + a)
-    } |> runTestIO<unit> env
+    } |> IO.RunSynchronously env
 
 [<Property>]
 let ``Applicative IO`` (env: int, a: int) =
@@ -55,7 +57,7 @@ let ``Applicative Syntax`` (env: int, a: int, b: int) =
         and! y = IO.returnM a
         and! z = IO.returnM b
         return (x + y * z) |> should equal (env + a * b)
-    } |> runTestIO<unit> env
+    } |> IO.RunSynchronously env
 
 [<Property>]
 let ``Reader ask`` (env: int, a: int) =
@@ -63,7 +65,7 @@ let ``Reader ask`` (env: int, a: int) =
         let! x = IO.returnM a
         let! y = IO.ask
         return (x + y) |> should equal (env + a)
-    } |> runTestIO<unit> env
+    } |> IO.RunSynchronously env
 
 [<Property>]
 let ``Reader asks`` (env: int, a: int) =
@@ -71,7 +73,7 @@ let ``Reader asks`` (env: int, a: int) =
         let! x = IO.returnM a
         let! y = IO.asks ((*) 2)
         return (x + y) |> should equal (a + (env * 2))
-    } |> runTestIO<unit> env
+    } |> IO.RunSynchronously env
 
 
 [<Property>]
@@ -80,5 +82,27 @@ let ``Reader local`` (env: int, a: int) =
         let! x = IO.returnM a
         let! y = IO.local ((*) 2) IO.ask
         return (x + y) |> should equal (a + (env * 2))
-    } |> runTestIO<unit> env
+    } |> IO.RunSynchronously env
 
+
+[<Property>]
+let ``Using`` (env: int, a: int) =
+    io {
+        use value = new TestUtils.TestDisposable()
+        return value
+    }
+    |> IO.RunSynchronously env
+    |> Result.map (fun r -> r.IsDisposed)
+    |> shouldEqual (Ok true)
+
+[<Property>]
+let ``For`` (env: int16 list) =
+    let mutable sum = 0
+    let res =
+        io {
+            let! values = IO.ask
+            for i in values do
+                sum <- sum + int32 i
+            return ()
+        } |> IO.RunSynchronously env
+    sum |> shouldEqual (env |> Seq.map int32 |> Seq.sum)
