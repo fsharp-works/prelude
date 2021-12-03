@@ -22,6 +22,8 @@ module IO =
     /// Wrap a given value into IO
     let returnM a = IO(fun _ -> AsyncResult.returnM a)
 
+
+
     /// Ignores the result and replaces it with unit
     let ignore (IO f) : IO<'r, unit, 'e> =
         IO(f >> AsyncResult.ignore)
@@ -98,7 +100,9 @@ module IO =
     let inline ofSuccess a = returnM a
     let ofError a : IO<'r, 'a, 'e> = IO(fun _ -> AsyncResult.ofError a)
     let ofAsync a : IO<'r, 'a, 'e> = IO(fun _ -> AsyncResult.ofAsync a)
+    let liftAsync f : IO<'r, 'a, 'e> = IO(f >> AsyncResult.ofAsync)
     let ofAsyncResult a : IO<'r, 'a, 'e> = IO(fun _ -> a)
+    let liftAsyncResult f : IO<'r, 'a, 'e> = IO f
     let ofOption e a : IO<'r, 'a, 'e> = IO(fun _ -> AsyncResult.ofOption e a)
     let ofOptionF e a : IO<'r, 'a, 'e> = IO(fun _ -> AsyncResult.ofOptionF e a)
 
