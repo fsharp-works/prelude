@@ -8,10 +8,6 @@ open FsUnitTyped
 
 let (>>=) m f = IO.bind f m
 
-let runTestIO<'err> z m: Result<_, 'err> =
-    m |> IO.RunSynchronously z
-
-
 [<Property>]
 let ``Left identity`` (env: int, a: int) =
     let k x = IO.ask |> IO.map ((+) x)
