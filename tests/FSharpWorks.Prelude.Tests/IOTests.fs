@@ -16,9 +16,12 @@ let ``Example test``(greet: string) =
     let getTime = IO.liftUnit (fun () -> DateTime.Now)
     let writeLine s = IO.liftUnit (fun () -> printfn s)
 
+    // We could write programs like
     io {
+        // get an environment that is going to be provided when the program runs
         let! env = IO.ask
         do! writeLine $"Hello, {env}"
+
         let! t1 = getTime
         do! sleep 100
         let! t2 = getTime
