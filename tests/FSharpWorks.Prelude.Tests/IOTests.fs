@@ -7,25 +7,26 @@ open FsUnit.Xunit
 open FSharpWorks.Prelude
 open FsUnitTyped
 
+open Console
+open Concurrency
+
 let (>>=) m f = IO.bind f m
 
 [<Property(2<tests>)>]
 let ``Example test``(greet: string) =
     // Assuming that we do have some IO actions
-    let sleep (n: int) = Async.Sleep(n) |> IO.ofAsync
     let getTime = IO.liftUnit (fun () -> DateTime.Now)
-    let writeLine s = IO.liftUnit (fun () -> printfn s)
 
     // We could write programs like
     io {
         // get an environment that is going to be provided when the program runs
         let! env = IO.ask
-        do! writeLine $"Hello, {env}"
+        do! putStrLn $"Hello, {env}"
 
         let! t1 = getTime
-        do! sleep 100
+        do! sleepMillis 100
         let! t2 = getTime
-        do! writeLine $"I slept from {t1} till {t2}"
+        do! putStrLn $"I slept from {t1} till {t2}"
     } |> IO.RunSynchronously greet
 
 
